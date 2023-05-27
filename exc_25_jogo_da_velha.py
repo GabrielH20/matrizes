@@ -11,6 +11,7 @@ matriz = [
 ]
 ia_jogada = 0
 
+#Exibir os elementos do Jogo
 def exibir_jogo_da_velha(matriz):
     for elemento in matriz:
         for valor in elemento:
@@ -18,6 +19,7 @@ def exibir_jogo_da_velha(matriz):
         print()
     print('-'*30)
 
+#Função que define a jogada do usuário e vê se ela é válida
 def usuario_jogar(matriz):
     while True:
         try:
@@ -39,6 +41,7 @@ def usuario_jogar(matriz):
             print('Valor fora do range! ou não inteiro!')
             continue
 
+#Função para checar se houve algum ganhador, se sim o código para
 def setar_elemento(elemento):
     set_elemento = set(elemento)
     if len(set_elemento)==1 and 0 not in set_elemento:
@@ -48,11 +51,13 @@ def setar_elemento(elemento):
             jogador = 'Máquina(1)'
         print(f'O jogador {jogador} ganhou')
         return True
-    
+
+#Inverte a Matriz
 def inverter_matriz(matriz):
     for elemento in matriz:
         elemento.reverse()
 
+#Checa se o valor da diagonal está com duas casas na diagonal, para então preencher a terceira, impedindo o jogador de ganhar
 def checar_diagonal(matriz,invertida=False):
     if invertida==True:
         inverter_matriz(matriz)
@@ -65,6 +70,7 @@ def checar_diagonal(matriz,invertida=False):
         inverter_matriz(matriz)
     return linha_dois
 
+#Manda os valores para o setar_elemento para checar a vitória
 def checar_vitoria(matriz_jogo_da_velha):
     #Checar vitória Horizontal
     for elemento in matriz_jogo_da_velha:
@@ -84,22 +90,21 @@ def checar_vitoria(matriz_jogo_da_velha):
     if setar_elemento(checar_diagonal(matriz_jogo_da_velha,True))==True:
         return True
 
-def adicionar_valor_horizontal(linha):
+#Verificar a quantidade de elementos na horizontal para impedir o jogador de ganhar
+def maquina_jogar_horizontal(linha):
     for indece,valor in enumerate(linha):
         if valor==0:
             del linha[indece]
             linha.insert(indece,1)
 
+#Adiciona valores na diagonal e vertical para impedir o jogador de ganhar
 def adicionar_valor_diagonal_vertical(matriz_jogo_da_velha,local_linha,local_coluna):
     global ia_jogada
     del matriz_jogo_da_velha[local_linha][local_coluna]
     matriz_jogo_da_velha[local_linha].insert(local_coluna,1)
     ia_jogada+=1
 
-def inverter_matriz(matriz):
-    for elemento in matriz:
-        elemento.reverse()
-        
+#Checa o valor da diagonal, verificando se existe 2 valores na diagonal, para preencher o terceiro com a função "adicionar_valor_diagonal_vertical"
 def checar_valor_diagonal(matriz_jogo_da_velha,invertido=False):
     global ia_jogada
     if invertido==True:
@@ -124,7 +129,8 @@ def checar_valor_diagonal(matriz_jogo_da_velha,invertido=False):
             ia_jogada+=1
     if invertido==True:
        inverter_matriz(matriz_jogo_da_velha)
-       
+
+#Caso a máquina não tenha jogado antes, impedindo o jogador de ganhar, acaba que randomiza a sua jogada em um espaço livre do jogo da velha
 def randomizar_jogada_maquina(matriz_jogo_da_velha):
     while True:
         valor_coluna_aleatorio = randint(0,2)
@@ -135,6 +141,7 @@ def randomizar_jogada_maquina(matriz_jogo_da_velha):
         else:
             continue
 
+#Gerencia a jogada da máquina
 def maquina_jogar(matriz_jogo_da_velha):
     global ia_jogada
     ia_jogada=0
@@ -146,7 +153,7 @@ def maquina_jogar(matriz_jogo_da_velha):
                 if elemento==valor:
                     valor_coluna+=1
             if valor_coluna==2 and ia_jogada==0:
-                adicionar_valor_horizontal(linha)
+                maquina_jogar_horizontal(linha)
                 ia_jogada+=1
     #Marcar IA vertical
     for valor in [1,-1]:
@@ -170,6 +177,7 @@ def maquina_jogar(matriz_jogo_da_velha):
         randomizar_jogada_maquina(matriz_jogo_da_velha)
     exibir_jogo_da_velha(matriz_jogo_da_velha)
 
+#Checa se o jogo está preenchido e não existe jogadas disponiveis
 def checar_velha(matriz):
     contador = 0
     for elemento in matriz:
